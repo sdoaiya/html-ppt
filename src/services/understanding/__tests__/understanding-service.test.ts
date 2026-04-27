@@ -12,4 +12,23 @@ describe('buildUnderstanding', () => {
     expect(result.keyPoints.length).toBeGreaterThan(0);
     expect(Array.isArray(result.openQuestions)).toBe(true);
   });
+
+  it('summarizes extracted text and table blocks', () => {
+    const result = buildUnderstanding({
+      brief: '做成招商汇报',
+      sources: [
+        {
+          id: '1',
+          name: '业务介绍.docx',
+          kind: 'document',
+          path: 'x',
+          status: 'ready',
+          blocks: [{ type: 'paragraph', text: '业务优势是渠道覆盖全国' }],
+          extractStatus: 'success'
+        }
+      ]
+    });
+
+    expect(result.keyPoints[0]).toContain('业务优势');
+  });
 });
