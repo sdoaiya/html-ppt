@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { serializeProject } from '../project-serialization.js';
-import { normalizeFilePayload } from '../project-files';
+import { normalizeFilePayload } from '../project-files.js';
 
 describe('serializeProject', () => {
   it('creates JSON snapshot for project export', () => {

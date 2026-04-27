@@ -18,7 +18,10 @@ export default function UnderstandingPage() {
         <p>这些资料将作为当前内容生成输入。</p>
         <ul>
           {(project?.sources ?? []).map((source) => (
-            <li key={source.id}>{source.name}</li>
+            <li key={source.id}>
+              <strong>{source.name}</strong>
+              {source.extractSummary ? <span> {source.extractSummary}</span> : null}
+            </li>
           ))}
         </ul>
       </section>
