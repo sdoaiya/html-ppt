@@ -3,6 +3,7 @@ declare global {
     desktopBridge: {
       platform: string;
       version: string;
+      pickProjectFiles: () => Promise<string[]>;
       getImageProviderConfig: () => Promise<unknown>;
       setImageProviderConfig: (payload: unknown) => Promise<unknown>;
     };
