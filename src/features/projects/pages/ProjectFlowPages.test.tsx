@@ -39,14 +39,14 @@ beforeEach(() => {
   ]);
 });
 
-test('understanding page shows imported materials guidance card', () => {
+test('understanding page shows imported materials guidance card', async () => {
   render(
     <MemoryRouter>
       <UnderstandingPage />
     </MemoryRouter>
   );
 
-  expect(screen.getByText('已导入资料')).toBeInTheDocument();
+  expect(await screen.findByText('已导入资料')).toBeInTheDocument();
   expect(screen.getByText('这些资料将作为当前内容生成输入。')).toBeInTheDocument();
   expect(screen.getByText('业务介绍.txt')).toBeInTheDocument();
   expect(screen.getByText('业务介绍.txt 已抽取 2 个文本块')).toBeInTheDocument();

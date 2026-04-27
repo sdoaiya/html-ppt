@@ -1,13 +1,32 @@
 import { useNavigate } from 'react-router-dom';
+import { buildUnderstandingWithAi } from '@/services/ai/understanding-client';
 import { buildUnderstanding } from '@/services/understanding/understanding-service';
 import { useProjectStore } from '@/stores/project-store';
+import { useEffect, useState } from 'react';
 
 export default function UnderstandingPage() {
   const project = useProjectStore((state) => state.currentProject);
   const setStage = useProjectStore((state) => state.setStage);
   const setUnderstanding = useProjectStore((state) => state.setUnderstanding);
   const navigate = useNavigate();
-  const understanding = buildUnderstanding({ brief: project?.brief ?? '整理成业务资料', sources: project?.sources ?? [] });
+  const [understanding, setLocalUnderstanding] = useState(
+    buildUnderstanding({ brief: project?.brief ?? '整理成业务资料', sources: project?.sources ?? [] })
+  );
+
+  useEffect(() => {
+    const run = async () => {
+      const aiResult = await buildUnderstandingWithAi({
+        brief: project?.brief ?? '整理成业务资料',
+        sources: project?.sources ?? []
+      });
+
+      if (aiResult) {
+        setLocalUnderstanding(aiResult);
+      }
+    };
+
+    void run();
+  }, [project]);
 
   return (
     <main className="flow-page">

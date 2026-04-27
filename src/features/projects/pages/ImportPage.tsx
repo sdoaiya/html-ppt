@@ -16,6 +16,7 @@ export default function ImportPage() {
   const setExtractedSources = useProjectStore((state) => state.setExtractedSources);
   const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  const [statusMessage, setStatusMessage] = useState('');
 
   return (
     <main>
@@ -46,6 +47,7 @@ export default function ImportPage() {
             );
 
             setExtractedSources(extractedSources);
+            setStatusMessage(`已解析 ${extractedSources.length} 份资料`);
             navigate('/understanding');
           };
 
@@ -61,6 +63,7 @@ export default function ImportPage() {
           <ul>
             {(selectedFiles.length ? selectedFiles : demoFiles).map((file) => <li key={file}>{file}</li>)}
           </ul>
+          {statusMessage ? <p>{statusMessage}</p> : <p>支持 txt / md / docx / pdf / xlsx / csv</p>}
         </section>
         <button
           type="button"

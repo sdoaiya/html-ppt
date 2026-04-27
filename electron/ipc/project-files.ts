@@ -1,5 +1,8 @@
 import { dialog, ipcMain } from 'electron';
 import { readFile } from 'node:fs/promises';
+import mammoth from 'mammoth';
+import { PDFParse } from 'pdf-parse';
+import * as XLSX from 'xlsx';
 export { serializeProject } from './project-serialization.js';
 
 export function normalizeFilePayload(input: {
@@ -45,9 +48,29 @@ export function registerProjectFileHandlers() {
           return normalizeFilePayload({ path: filePath, name, ext, rows });
         }
 
+        if (ext === 'xlsx') {
+          const workbook = XLSX.readFile(filePath);
+          const firstSheet = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheet];
+          const rows = XLSX.utils.sheet_to_json<string[]>(worksheet, { header: 1 }) as string[][];
+          return normalizeFilePayload({ path: filePath, name, ext, rows });
+        }
+
         if (['txt', 'md'].includes(ext)) {
           const content = await readFile(filePath, 'utf8');
           return normalizeFilePayload({ path: filePath, name, ext, content });
+        }
+
+        if (ext === 'docx') {
+          const result = await mammoth.extractRawText({ path: filePath });
+          return normalizeFilePayload({ path: filePath, name, ext, content: result.value });
+        }
+
+        if (ext === 'pdf') {
+          const buffer = await readFile(filePath);
+          const parser = new PDFParse({ data: buffer });
+          const result = await parser.getText();
+          return normalizeFilePayload({ path: filePath, name, ext, content: result.text });
         }
 
         return normalizeFilePayload({ path: filePath, name, ext });
