@@ -4,6 +4,7 @@ import { useProjectStore } from '@/stores/project-store';
 
 export default function StructurePage() {
   const setStage = useProjectStore((state) => state.setStage);
+  const setStructure = useProjectStore((state) => state.setStructure);
   const navigate = useNavigate();
   const pages = buildStructure('更适合招商/销售介绍');
 
@@ -19,6 +20,7 @@ export default function StructurePage() {
       </ol>
       <button
         onClick={() => {
+          setStructure(pages);
           setStage('workbench');
           navigate('/workbench');
         }}

@@ -5,6 +5,7 @@ import { useProjectStore } from '@/stores/project-store';
 export default function UnderstandingPage() {
   const project = useProjectStore((state) => state.currentProject);
   const setStage = useProjectStore((state) => state.setStage);
+  const setUnderstanding = useProjectStore((state) => state.setUnderstanding);
   const navigate = useNavigate();
   const understanding = buildUnderstanding({ brief: project?.brief ?? '整理成业务资料', sources: project?.sources ?? [] });
 
@@ -19,6 +20,7 @@ export default function UnderstandingPage() {
       </ul>
       <button
         onClick={() => {
+          setUnderstanding(understanding);
           setStage('structure');
           navigate('/structure');
         }}
