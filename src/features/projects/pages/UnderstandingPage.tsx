@@ -13,6 +13,14 @@ export default function UnderstandingPage() {
     <main>
       <h2>理解资料</h2>
       <p>{understanding.summary}</p>
+      <section>
+        <h3>已导入资料</h3>
+        <ul>
+          {(project?.sources ?? []).map((source) => (
+            <li key={source.id}>{source.name}</li>
+          ))}
+        </ul>
+      </section>
       <ul>
         {understanding.visualizable.map((item) => (
           <li key={item}>{item}</li>

@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, test, expect } from 'vitest';
 import { useProjectStore } from '@/stores/project-store';
 import WorkbenchPage from './WorkbenchPage';
@@ -23,4 +24,10 @@ test('renders project-specific pages from shared project state', () => {
   render(<WorkbenchPage />);
   expect(screen.getByText('招商资料演示')).toBeInTheDocument();
   expect(screen.getByText('方案对比')).toBeInTheDocument();
+});
+
+test('shows feedback after saving current variants', async () => {
+  render(<WorkbenchPage />);
+  await userEvent.click(screen.getByRole('button', { name: '保存当前版本' }));
+  expect(screen.getByText('已保存 2 个版本')).toBeInTheDocument();
 });

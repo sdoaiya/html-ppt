@@ -29,4 +29,13 @@ describe('project store', () => {
     expect(project?.structure[0].title).toBe('封面');
     expect(project?.variants[0]).toMatchObject({ id: 'stable' });
   });
+
+  it('preserves project name while updating later fields', () => {
+    useProjectStore.getState().createProject('招商资料演示', '做成招商汇报');
+    useProjectStore.getState().setSources([
+      { id: 's1', name: '旧方案.pptx', kind: 'document', path: '旧方案.pptx', status: 'ready' }
+    ]);
+
+    expect(useProjectStore.getState().currentProject?.name).toBe('招商资料演示');
+  });
 });

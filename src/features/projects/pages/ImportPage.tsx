@@ -4,6 +4,12 @@ import { useProjectStore } from '@/stores/project-store';
 
 const demoFiles = ['旧方案.pptx', '业务数据.xlsx', '产品截图.png'];
 
+function buildProjectName(brief: string) {
+  const trimmed = brief.trim();
+  if (!trimmed) return '未命名资料项目';
+  return trimmed.length > 18 ? `${trimmed.slice(0, 18)}...` : trimmed;
+}
+
 export default function ImportPage() {
   const createProject = useProjectStore((state) => state.createProject);
   const setSources = useProjectStore((state) => state.setSources);
@@ -16,7 +22,8 @@ export default function ImportPage() {
         onSubmit={(event) => {
           event.preventDefault();
           const form = new FormData(event.currentTarget);
-          createProject('未命名资料项目', String(form.get('brief') ?? '整理成业务资料'));
+          const brief = String(form.get('brief') ?? '整理成业务资料');
+          createProject(buildProjectName(brief), brief);
           setSources(demoFiles.map(createSourceAssetFromPath));
           navigate('/understanding');
         }}
