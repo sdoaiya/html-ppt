@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createEmptyProject } from '@/domain/projects/factories';
-import type { Project, ProjectStage, SourceAsset, StructureNode } from '@/domain/projects/types';
+import type { ExtractedSourceAsset, Project, ProjectStage, SourceAsset, StructureNode } from '@/domain/projects/types';
 
 type ProjectStore = {
   currentProject: Project | null;
@@ -8,6 +8,7 @@ type ProjectStore = {
   createProject: (name: string, brief: string) => void;
   setStage: (stage: ProjectStage) => void;
   setSources: (sources: SourceAsset[]) => void;
+  setExtractedSources: (sources: ExtractedSourceAsset[]) => void;
   setUnderstanding: (understanding: unknown) => void;
   setStructure: (structure: StructureNode[]) => void;
   setVariants: (variants: unknown[]) => void;
@@ -33,6 +34,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
   setStage: (stage) =>
     set(updateProject((project) => ({ ...project, stage }))),
   setSources: (sources) => set(updateProject((project) => ({ ...project, sources }))),
+  setExtractedSources: (sources) => set(updateProject((project) => ({ ...project, sources }))),
   setUnderstanding: (understanding) => set(updateProject((project) => ({ ...project, understanding }))),
   setStructure: (structure) => set(updateProject((project) => ({ ...project, structure }))),
   setVariants: (variants) => set(updateProject((project) => ({ ...project, variants })))

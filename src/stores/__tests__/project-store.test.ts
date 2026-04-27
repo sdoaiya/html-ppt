@@ -38,4 +38,24 @@ describe('project store', () => {
 
     expect(useProjectStore.getState().currentProject?.name).toBe('招商资料演示');
   });
+
+  it('stores extracted content blocks and understanding result', () => {
+    useProjectStore.getState().createProject('真实资料', '做成招商汇报');
+    useProjectStore.getState().setExtractedSources([
+      {
+        id: 'f1',
+        name: '业务介绍.docx',
+        kind: 'document',
+        path: '业务介绍.docx',
+        status: 'ready',
+        extractStatus: 'success',
+        blocks: [{ type: 'paragraph', text: '业务介绍内容' }],
+        extractSummary: '已抽取正文'
+      }
+    ]);
+    useProjectStore.getState().setUnderstanding({ summary: '已提取真实资料内容' });
+
+    expect(useProjectStore.getState().currentProject?.sources[0]).toMatchObject({ name: '业务介绍.docx' });
+    expect(useProjectStore.getState().currentProject?.understanding).toEqual({ summary: '已提取真实资料内容' });
+  });
 });
