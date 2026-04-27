@@ -68,17 +68,20 @@ export default function WorkbenchPage() {
         </section>
         <aside>
           <ActionPanel title="能力区" initialPrompt={autoPrompt} onGenerateImage={handleGenerateImage} />
-          <button
-            type="button"
-            onClick={() => {
-              setVariants(variants);
-              setSaveMessage(`已保存 ${variants.length} 个版本`);
-            }}
-          >
-            保存当前版本
-          </button>
-          {imageConfig.apiKey ? <p>图片服务已连接</p> : <p>请先到设置页配置 API Key</p>}
-          {saveMessage ? <p>{saveMessage}</p> : null}
+          <section className="panel status-panel">
+            <h3>状态与保存</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setVariants(variants);
+                setSaveMessage(`已保存 ${variants.length} 个版本`);
+              }}
+            >
+              保存当前版本
+            </button>
+            {imageConfig.apiKey ? <p>图片服务已连接</p> : <p>请先到设置页配置 API Key</p>}
+            {saveMessage ? <p>{saveMessage}</p> : <p>当前版本尚未保存</p>}
+          </section>
         </aside>
       </section>
     </main>

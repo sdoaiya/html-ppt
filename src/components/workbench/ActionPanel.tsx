@@ -10,9 +10,12 @@ export function ActionPanel({ title, initialPrompt, onGenerateImage }: ActionPan
   return (
     <section className="panel">
       <h3>{title}</h3>
-      <button type="button">更高级</button>
-      <button type="button">全局统一</button>
-      <button type="button">检查问题页</button>
+      <section className="action-group">
+        <h4>内容与视觉</h4>
+        <button type="button">更高级</button>
+        <button type="button">全局统一</button>
+        <button type="button">检查问题页</button>
+      </section>
       <ImageGenerationCard initialPrompt={initialPrompt} onGenerate={onGenerateImage} />
     </section>
   );

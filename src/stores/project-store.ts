@@ -4,6 +4,7 @@ import type { Project, ProjectStage, SourceAsset, StructureNode } from '@/domain
 
 type ProjectStore = {
   currentProject: Project | null;
+  recentProjects: Project[];
   createProject: (name: string, brief: string) => void;
   setStage: (stage: ProjectStage) => void;
   setSources: (sources: SourceAsset[]) => void;
@@ -20,7 +21,15 @@ function updateProject(updater: (project: Project) => Project) {
 
 export const useProjectStore = create<ProjectStore>((set) => ({
   currentProject: null,
-  createProject: (name, brief) => set({ currentProject: createEmptyProject(name, brief) }),
+  recentProjects: [],
+  createProject: (name, brief) =>
+    set((state) => {
+      const project = createEmptyProject(name, brief);
+      return {
+        currentProject: project,
+        recentProjects: [project, ...state.recentProjects.filter((item) => item.id !== project.id)].slice(0, 6)
+      };
+    }),
   setStage: (stage) =>
     set(updateProject((project) => ({ ...project, stage }))),
   setSources: (sources) => set(updateProject((project) => ({ ...project, sources }))),
