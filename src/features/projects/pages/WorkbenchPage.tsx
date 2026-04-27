@@ -4,8 +4,11 @@ import { SourcePanel } from '@/components/workbench/SourcePanel';
 import { StageProgress } from '@/components/workbench/StageProgress';
 import { StructurePanel } from '@/components/workbench/StructurePanel';
 import { VariantSwitcher } from '@/components/workbench/VariantSwitcher';
+import { buildDraftVariants } from '@/services/drafts/draft-service';
 
 export default function WorkbenchPage() {
+  const variants = buildDraftVariants(['封面', '核心结论', '方案对比']);
+
   return (
     <main>
       <StageProgress />
@@ -15,7 +18,7 @@ export default function WorkbenchPage() {
           <StructurePanel />
         </aside>
         <section>
-          <VariantSwitcher />
+          <VariantSwitcher variants={variants} />
           <PreviewCanvas title="预览区" />
         </section>
         <aside>
