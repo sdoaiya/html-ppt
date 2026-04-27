@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { registerAppConfigHandlers } from './ipc/app-config.js';
+import { registerExportHandlers } from './ipc/export.js';
 import { registerProjectFileHandlers } from './ipc/project-files.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -29,6 +30,7 @@ function createWindow() {
 
 app.whenReady().then(() => {
   registerAppConfigHandlers();
+  registerExportHandlers();
   registerProjectFileHandlers();
   createWindow();
 });
