@@ -1,8 +1,16 @@
 import Store from 'electron-store';
-import type { ImageProviderConfig } from '../ipc/app-config.js';
+import type { ImageProviderConfig, UnderstandingProviderConfig } from '../ipc/app-config.js';
 
 type AppStoreSchema = {
+  understandingProvider: UnderstandingProviderConfig;
   imageProvider: ImageProviderConfig;
+};
+
+export const defaultUnderstandingProviderConfig: UnderstandingProviderConfig = {
+  provider: 'openai_compatible',
+  baseUrl: '',
+  apiKey: '',
+  model: ''
 };
 
 export const defaultImageProviderConfig: ImageProviderConfig = {
@@ -14,6 +22,7 @@ export const defaultImageProviderConfig: ImageProviderConfig = {
 
 export const appStore = new Store<AppStoreSchema>({
   defaults: {
+    understandingProvider: defaultUnderstandingProviderConfig,
     imageProvider: defaultImageProviderConfig
   }
 });
