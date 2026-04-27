@@ -124,3 +124,35 @@ body {
   border-radius: 12px;
   margin-top: 16px;
 }
+
+.meta-list {
+  padding-left: 18px;
+}
+
+.meta-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.ordered {
+  list-style: decimal;
+}
+
+.preview-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+}
+
+.preview-slot {
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.55);
+}
+
+.preview-slot h5 {
+  margin: 0 0 8px;
+}

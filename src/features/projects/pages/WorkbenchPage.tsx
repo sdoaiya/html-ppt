@@ -59,8 +59,8 @@ export default function WorkbenchPage() {
       <StageProgress />
       <section className="workbench-grid">
         <aside>
-          <SourcePanel title="资料区" />
-          <StructurePanel />
+          <SourcePanel title="资料区" sources={project?.sources} />
+          <StructurePanel pages={project?.structure} />
         </aside>
         <section>
           <VariantSwitcher variants={variants} />
@@ -77,6 +77,7 @@ export default function WorkbenchPage() {
           >
             保存当前版本
           </button>
+          {imageConfig.apiKey ? <p>图片服务已连接</p> : <p>请先到设置页配置 API Key</p>}
           {saveMessage ? <p>{saveMessage}</p> : null}
         </aside>
       </section>

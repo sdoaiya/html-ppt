@@ -23,7 +23,7 @@ test('renders three-pane workbench', () => {
 test('renders project-specific pages from shared project state', () => {
   render(<WorkbenchPage />);
   expect(screen.getByText('招商资料演示')).toBeInTheDocument();
-  expect(screen.getByText('方案对比')).toBeInTheDocument();
+  expect(screen.getAllByText('方案对比').length).toBeGreaterThanOrEqual(2);
 });
 
 test('shows feedback after saving current variants', async () => {
@@ -39,4 +39,10 @@ test('auto-fills image prompt from project context', () => {
   expect(value).toContain('做成招商汇报');
   expect(value).toContain('封面');
   expect(value).toContain('16:9');
+});
+
+test('shows cover and comparison content slots in preview', () => {
+  render(<WorkbenchPage />);
+  expect(screen.getByText('封面卡槽')).toBeInTheDocument();
+  expect(screen.getByText('对比页卡槽')).toBeInTheDocument();
 });

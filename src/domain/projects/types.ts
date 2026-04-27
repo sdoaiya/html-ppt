@@ -29,5 +29,5 @@ export type Project = {
   sources: SourceAsset[];
   understanding: unknown | null;
   structure: StructureNode[];
-  variants: unknown[];
+  variants: Array<{ id: string; label: string; pages: Array<{ title: string; tone: string; density: string }> }>;
 };
