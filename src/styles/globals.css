@@ -1,0 +1,27 @@
+:root {
+  color: #1b1b1f;
+  background: #f6f4ef;
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.app-home {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.app-home h1 {
+  margin: 0;
+  font-size: 44px;
+}
+
+.app-home p {
+  margin: 0;
+  color: #66615b;
+}
