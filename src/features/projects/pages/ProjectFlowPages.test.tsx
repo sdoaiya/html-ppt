@@ -25,6 +25,14 @@ beforeEach(() => {
       blocks: [{ type: 'paragraph', text: '业务优势是渠道覆盖全国' }]
     }
   ]);
+  useProjectStore.getState().setUnderstanding({
+    summary: '已提取真实资料内容',
+    keyPoints: ['业务优势是渠道覆盖全国'],
+    duplicates: [],
+    openQuestions: [],
+    visualizable: ['适合做区域销售对比图'],
+    structureHints: ['建议先给出结论，再展示优势对比与实施路径']
+  });
   useProjectStore.getState().setStructure([
     { id: 'p1', title: '封面', role: 'cover', bullets: ['招商资料演示'] },
     { id: 'p2', title: '方案对比', role: 'comparison', bullets: ['当前方式 vs 新方式'] }
@@ -53,6 +61,7 @@ test('structure page shows next-step card messaging', () => {
   );
 
   expect(screen.getByText('当前结构将驱动后续版式与配图生成。')).toBeInTheDocument();
+  expect(screen.getByText('建议先给出结论，再展示优势对比与实施路径')).toBeInTheDocument();
   expect(screen.getByText('进入版式工作台')).toBeInTheDocument();
 });
 
