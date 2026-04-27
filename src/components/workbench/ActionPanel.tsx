@@ -1,4 +1,5 @@
 type Props = { title: string };
+import { ImageGenerationCard } from './ImageGenerationCard';
 
 export function ActionPanel({ title }: Props) {
   return (
@@ -7,6 +8,7 @@ export function ActionPanel({ title }: Props) {
       <button type="button">更高级</button>
       <button type="button">全局统一</button>
       <button type="button">检查问题页</button>
+      <ImageGenerationCard />
     </section>
   );
 }
