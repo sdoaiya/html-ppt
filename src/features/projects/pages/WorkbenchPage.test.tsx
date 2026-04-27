@@ -7,6 +7,18 @@ import WorkbenchPage from './WorkbenchPage';
 
 beforeEach(() => {
   useProjectStore.getState().createProject('招商资料演示', '做成招商汇报');
+  useProjectStore.getState().setExtractedSources([
+    {
+      id: 'f1',
+      name: '业务介绍.txt',
+      kind: 'document',
+      path: '业务介绍.txt',
+      status: 'ready',
+      extractStatus: 'success',
+      extractSummary: '业务介绍.txt 已抽取 2 个文本块',
+      blocks: [{ type: 'paragraph', text: '业务优势是渠道覆盖全国' }]
+    }
+  ]);
   useProjectStore.getState().setStructure([
     { id: 's1', title: '封面', role: 'cover', bullets: ['招商资料'] },
     { id: 's2', title: '方案对比', role: 'comparison', bullets: ['当前方式 vs 新方式'] }
@@ -45,4 +57,10 @@ test('shows cover and comparison content slots in preview', () => {
   render(<WorkbenchPage />);
   expect(screen.getByText('封面卡槽')).toBeInTheDocument();
   expect(screen.getByText('对比页卡槽')).toBeInTheDocument();
+});
+
+test('shows extracted source names and summaries in workbench source panel', () => {
+  render(<WorkbenchPage />);
+  expect(screen.getByText('业务介绍.txt')).toBeInTheDocument();
+  expect(screen.getByText('业务介绍.txt 已抽取 2 个文本块')).toBeInTheDocument();
 });

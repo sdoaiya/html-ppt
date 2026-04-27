@@ -10,7 +10,10 @@ export function SourcePanel({ title, sources = [] }: Props) {
       <ul className="meta-list">
         {sources.map((source) => (
           <li key={source.id}>
-            <strong>{source.name}</strong>
+            <div>
+              <strong>{source.name}</strong>
+              {source.extractSummary ? <p>{source.extractSummary}</p> : null}
+            </div>
             <span>{source.kind}</span>
           </li>
         ))}
