@@ -8,7 +8,32 @@ body {
   margin: 0;
 }
 
-.app-home {
+.app-shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: #fffdf8;
+  border-bottom: 1px solid #e6e0d7;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 14px;
+  color: #67615a;
+  font-size: 14px;
+}
+
+.home-page {
   min-height: 100vh;
   display: grid;
   place-content: center;
@@ -16,12 +41,19 @@ body {
   text-align: center;
 }
 
-.app-home h1 {
-  margin: 0;
-  font-size: 44px;
+.home-page button {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #1b1b1f;
+  cursor: pointer;
 }
 
-.app-home p {
-  margin: 0;
-  color: #66615b;
+.quick-types {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
 }
