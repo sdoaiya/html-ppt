@@ -6,6 +6,7 @@ import UnderstandingPage from '@/features/projects/pages/UnderstandingPage';
 import StructurePage from '@/features/projects/pages/StructurePage';
 import WorkbenchPage from '@/features/projects/pages/WorkbenchPage';
 import ExportPage from '@/features/projects/pages/ExportPage';
+import SettingsPage from '@/features/settings/pages/SettingsPage';
 
 export const router = createMemoryRouter(
   [
@@ -18,7 +19,8 @@ export const router = createMemoryRouter(
         { path: 'understanding', element: <UnderstandingPage /> },
         { path: 'structure', element: <StructurePage /> },
         { path: 'workbench', element: <WorkbenchPage /> },
-        { path: 'export', element: <ExportPage /> }
+        { path: 'export', element: <ExportPage /> },
+        { path: 'settings', element: <SettingsPage /> }
       ]
     }
   ],

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 
 const steps = ['上传资料', '理解资料', '组织结构', '选择方向', '生成版式', '导出成品'];
 
@@ -12,6 +12,7 @@ export function AppShell() {
             <span key={step}>{step}</span>
           ))}
         </nav>
+        <Link to="/settings">设置</Link>
       </header>
       <Outlet />
     </div>

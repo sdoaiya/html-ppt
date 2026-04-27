@@ -19,6 +19,7 @@ body {
   padding: 18px 28px;
   background: #fffdf8;
   border-bottom: 1px solid #e6e0d7;
+  gap: 16px;
 }
 
 .topbar h1 {
@@ -30,6 +31,14 @@ body {
   display: flex;
   gap: 14px;
   color: #67615a;
+  font-size: 14px;
+  flex: 1;
+  justify-content: center;
+}
+
+.topbar a {
+  color: #1b1b1f;
+  text-decoration: none;
   font-size: 14px;
 }
 
