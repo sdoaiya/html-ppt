@@ -1,6 +1,6 @@
-type Props = { title: string; projectName?: string; pageTitles?: string[] };
+type Props = { title: string; projectName?: string; pageTitles?: string[]; generatedImageUrl?: string };
 
-export function PreviewCanvas({ title, projectName = '未命名资料项目', pageTitles = [] }: Props) {
+export function PreviewCanvas({ title, projectName = '未命名资料项目', pageTitles = [], generatedImageUrl }: Props) {
   return (
     <section className="preview-canvas">
       <h3>{title}</h3>
@@ -10,6 +10,9 @@ export function PreviewCanvas({ title, projectName = '未命名资料项目', pa
         <ol>
           {pageTitles.map((page) => <li key={page}>{page}</li>)}
         </ol>
+        {generatedImageUrl ? (
+          <img className="preview-generated-image" src={generatedImageUrl} alt="页面预览" />
+        ) : null}
       </article>
     </section>
   );

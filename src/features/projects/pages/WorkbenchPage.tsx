@@ -5,14 +5,16 @@ import { StageProgress } from '@/components/workbench/StageProgress';
 import { StructurePanel } from '@/components/workbench/StructurePanel';
 import { VariantSwitcher } from '@/components/workbench/VariantSwitcher';
 import { createImageProvider } from '@/services/ai/image-provider';
+import { autoBuildPagePrompt } from '@/services/ai/prompt-builder';
 import { buildDraftVariants } from '@/services/drafts/draft-service';
 import { useProjectStore } from '@/stores/project-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function WorkbenchPage() {
   const project = useProjectStore((state) => state.currentProject);
   const setVariants = useProjectStore((state) => state.setVariants);
   const [saveMessage, setSaveMessage] = useState('');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState('');
   const [imageConfig, setImageConfig] = useState({
     baseUrl: 'https://free.codesonline.dev/v1',
     apiKey: '',
@@ -21,6 +23,12 @@ export default function WorkbenchPage() {
   });
   const pageTitles = project?.structure.length ? project.structure.map((page) => page.title) : ['封面', '核心结论', '方案对比'];
   const variants = buildDraftVariants(pageTitles);
+
+  const autoPrompt = useMemo(() => {
+    if (!project || project.structure.length === 0) return '';
+    const firstPage = project.structure[0];
+    return autoBuildPagePrompt(project.brief, firstPage.title, firstPage.role);
+  }, [project]);
 
   useEffect(() => {
     window.desktopBridge?.getImageProviderConfig().then((config) => {
@@ -41,7 +49,9 @@ export default function WorkbenchPage() {
     }
 
     const result = await provider.generate({ prompt: input.prompt, size: input.size, upscale: input.upscale, n: 1 });
-    return result?.data?.[0]?.url ?? null;
+    const url = result?.data?.[0]?.url ?? null;
+    if (url) setGeneratedImageUrl(url);
+    return url;
   }
 
   return (
@@ -54,10 +64,10 @@ export default function WorkbenchPage() {
         </aside>
         <section>
           <VariantSwitcher variants={variants} />
-          <PreviewCanvas title="预览区" projectName={project?.name} pageTitles={pageTitles} />
+          <PreviewCanvas title="预览区" projectName={project?.name} pageTitles={pageTitles} generatedImageUrl={generatedImageUrl} />
         </section>
         <aside>
-          <ActionPanel title="能力区" onGenerateImage={handleGenerateImage} />
+          <ActionPanel title="能力区" initialPrompt={autoPrompt} onGenerateImage={handleGenerateImage} />
           <button
             type="button"
             onClick={() => {

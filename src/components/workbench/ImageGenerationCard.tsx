@@ -1,14 +1,15 @@
 import { useState } from 'react';
 
 type Props = {
+  initialPrompt?: string;
   onGenerate?: (input: { mode: 'generate' | 'edit'; prompt: string; size: string; upscale?: '2k' | '4k' }) => Promise<string | null>;
 };
 
-export function ImageGenerationCard({ onGenerate }: Props) {
+export function ImageGenerationCard({ initialPrompt = '', onGenerate }: Props) {
   const [mode, setMode] = useState<'generate' | 'edit'>('generate');
   const [size, setSize] = useState('16:9');
   const [upscale, setUpscale] = useState('');
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState(initialPrompt);
   const [previewUrl, setPreviewUrl] = useState('');
   const [status, setStatus] = useState('');
 

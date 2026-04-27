@@ -31,3 +31,12 @@ test('shows feedback after saving current variants', async () => {
   await userEvent.click(screen.getByRole('button', { name: '保存当前版本' }));
   expect(screen.getByText('已保存 2 个版本')).toBeInTheDocument();
 });
+
+test('auto-fills image prompt from project context', () => {
+  render(<WorkbenchPage />);
+  const promptTextarea = screen.getByLabelText('图片提示词');
+  const value = (promptTextarea as HTMLTextAreaElement).value;
+  expect(value).toContain('做成招商汇报');
+  expect(value).toContain('封面');
+  expect(value).toContain('16:9');
+});

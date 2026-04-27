@@ -117,3 +117,10 @@ body {
   display: grid;
   gap: 6px;
 }
+
+.generated-preview,
+.preview-generated-image {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 16px;
+}
