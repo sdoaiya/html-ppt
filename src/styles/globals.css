@@ -57,3 +57,41 @@ body {
   padding: 0;
   list-style: none;
 }
+
+.stage-progress {
+  display: flex;
+  gap: 12px;
+  padding: 18px 28px;
+  margin: 0;
+  list-style: none;
+  color: #67615a;
+}
+
+.workbench-grid {
+  display: grid;
+  grid-template-columns: 300px minmax(520px, 1fr) 320px;
+  gap: 16px;
+  padding: 20px 28px;
+}
+
+.panel,
+.preview-canvas {
+  padding: 18px;
+  border: 1px solid #e6e0d7;
+  border-radius: 18px;
+  background: #fffdf8;
+}
+
+.preview-card {
+  min-height: 360px;
+  display: grid;
+  place-content: center;
+  border-radius: 14px;
+  background: #f0ebe2;
+}
+
+.variant-switcher {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
