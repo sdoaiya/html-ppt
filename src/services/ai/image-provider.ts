@@ -12,8 +12,13 @@ export type ImageGenerateInput = {
   upscale?: '2k' | '4k';
 };
 
+export type ImageProviderResponse = {
+  created?: number;
+  data?: Array<{ url?: string }>;
+};
+
 export function createImageProvider(fetcher: typeof fetch, config: ImageProviderConfig) {
-  const postJson = async (path: string, body: Record<string, unknown>) => {
+  const postJson = async (path: string, body: Record<string, unknown>): Promise<ImageProviderResponse> => {
     const response = await fetcher(`${config.baseUrl}${path}`, {
       method: 'POST',
       headers: {
@@ -34,7 +39,7 @@ export function createImageProvider(fetcher: typeof fetch, config: ImageProvider
     generate(input: ImageGenerateInput) {
       return postJson('/images/generations', input);
     },
-    async edit(input: { prompt: string; size: string; files: File[]; upscale?: '2k' | '4k' }) {
+    async edit(input: { prompt: string; size: string; files: File[]; upscale?: '2k' | '4k' }): Promise<ImageProviderResponse> {
       const form = new FormData();
       form.append('model', config.model);
       form.append('prompt', input.prompt);
