@@ -15,10 +15,11 @@ export default function ExportPage() {
   });
 
   return (
-    <main>
+    <main className="flow-page">
       <h2>导出成品</h2>
-      <section>
+      <section className="panel flow-section export-summary">
         <h3>导出前质检</h3>
+        <p>请先处理高风险项，再导出项目结果。</p>
         <ul>
           {result.issues.map((issue) => (
             <li key={issue}>{issue}</li>

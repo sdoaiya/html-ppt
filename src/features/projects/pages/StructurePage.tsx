@@ -9,15 +9,19 @@ export default function StructurePage() {
   const pages = buildStructure('更适合招商/销售介绍');
 
   return (
-    <main>
+    <main className="flow-page">
       <h2>组织结构</h2>
-      <ol>
-        {pages.map((page) => (
-          <li key={page.id}>
-            <strong>{page.title}</strong> · {page.role}
-          </li>
-        ))}
-      </ol>
+      <p className="page-intro">当前结构将驱动后续版式与配图生成。</p>
+      <section className="panel flow-section">
+        <h3>页面结构</h3>
+        <ol>
+          {pages.map((page) => (
+            <li key={page.id}>
+              <strong>{page.title}</strong> · {page.role}
+            </li>
+          ))}
+        </ol>
+      </section>
       <button
         onClick={() => {
           setStructure(pages);

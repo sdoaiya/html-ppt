@@ -29,5 +29,11 @@ test('shows recent project card when project history exists', () => {
   useProjectStore.getState().createProject('招商资料演示', '做成招商汇报');
   render(<App />);
   expect(screen.getByText('最近项目')).toBeInTheDocument();
-  expect(screen.getByText('招商资料演示')).toBeInTheDocument();
+  expect(screen.getAllByText('招商资料演示').length).toBeGreaterThanOrEqual(2);
+});
+
+test('shows current project area in top bar when project exists', () => {
+  useProjectStore.getState().createProject('招商资料演示', '做成招商汇报');
+  render(<App />);
+  expect(screen.getAllByText('招商资料演示').length).toBeGreaterThanOrEqual(2);
 });
