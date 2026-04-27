@@ -18,4 +18,15 @@ describe('serializeProject', () => {
 
     expect(payload.content).toBe('hello');
   });
+
+  it('keeps spreadsheet rows for parsed table payloads', () => {
+    const payload = normalizeFilePayload({
+      path: 'data.csv',
+      name: 'data.csv',
+      ext: 'csv',
+      rows: [['地区', '销售额'], ['华北', '120']]
+    });
+
+    expect(payload.rows?.[0]).toEqual(['地区', '销售额']);
+  });
 });
