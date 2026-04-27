@@ -1,4 +1,5 @@
 import { dialog, ipcMain } from 'electron';
+export { serializeProject } from './project-serialization.js';
 
 export function registerProjectFileHandlers() {
   ipcMain.handle('project-files:pick', async () => {
