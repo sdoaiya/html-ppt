@@ -14,4 +14,15 @@ describe('extractTextBlocks', () => {
       { type: 'paragraph', text: '第二段' }
     ]);
   });
+
+  it('extracts markdown headings as heading blocks', async () => {
+    const blocks = await extractTextBlocks({
+      kind: 'document',
+      name: 'note.md',
+      content: '# 标题\n\n正文段落'
+    });
+
+    expect(blocks[0]).toEqual({ type: 'heading', text: '标题' });
+    expect(blocks[1]).toEqual({ type: 'paragraph', text: '正文段落' });
+  });
 });

@@ -9,5 +9,10 @@ export async function extractTextBlocks(input: {
     .split(/\n\s*\n/)
     .map((chunk) => chunk.trim())
     .filter(Boolean)
-    .map((text) => ({ type: 'paragraph', text }));
+    .map((text) => {
+      if (text.startsWith('# ')) {
+        return { type: 'heading', text: text.slice(2).trim() } as ContentBlock;
+      }
+      return { type: 'paragraph', text } as ContentBlock;
+    });
 }

@@ -29,4 +29,14 @@ describe('serializeProject', () => {
 
     expect(payload.rows?.[0]).toEqual(['地区', '销售额']);
   });
+
+  it('keeps extension metadata for unsupported binary document payloads', () => {
+    const payload = normalizeFilePayload({
+      path: 'report.docx',
+      name: 'report.docx',
+      ext: 'docx'
+    });
+
+    expect(payload.ext).toBe('docx');
+  });
 });
