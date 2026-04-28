@@ -4,9 +4,12 @@
   "private": true,
   "main": "dist-electron/main.js",
   "type": "module",
+  "author": "sdoaiya",
+  "description": "AI 资料生产工作台桌面版",
   "scripts": {
     "dev": "concurrently \"vite\" \"wait-on tcp:5173 && electron .\"",
     "build": "vite build && tsc -p electron/tsconfig.json",
+    "package:dir": "npm run build && electron-builder --dir --win",
     "test": "vitest run",
     "test:watch": "vitest",
     "e2e": "playwright test"
@@ -34,10 +37,34 @@
     "@vitejs/plugin-react": "^4.4.1",
     "concurrently": "^9.1.2",
     "electron": "^35.1.5",
+    "electron-builder": "^26.8.1",
     "jsdom": "^26.0.0",
     "typescript": "^5.7.3",
     "vite": "^6.2.0",
     "vitest": "^3.0.5",
     "wait-on": "^8.0.2"
+  },
+  "build": {
+    "appId": "com.sdoaiya.ziliao-workbench",
+    "productName": "资料生产工作台",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
   }
 }
