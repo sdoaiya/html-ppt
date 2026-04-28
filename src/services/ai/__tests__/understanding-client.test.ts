@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { buildUnderstandingRequestConfig, buildUnderstandingWithAi } from '../understanding-client';
 
 describe('buildUnderstandingRequestConfig', () => {
@@ -21,5 +21,77 @@ describe('buildUnderstandingRequestConfig', () => {
     });
 
     expect(result?.summary).toContain('做成招商汇报');
+  });
+
+  it('calls remote LLM when config with apiKey is provided', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{
+          message: {
+            content: JSON.stringify({
+              summary: '已根据资料生成摘要',
+              keyPoints: ['重点1', '重点2'],
+              duplicates: [],
+              openQuestions: ['是否有补充资料？'],
+              visualizable: ['适合做对比图'],
+              structureHints: ['建议先结论后优势']
+            })
+          }
+        }]
+      })
+    });
+
+    const result = await buildUnderstandingWithAi({
+      brief: '做成招商汇报',
+      sources: [
+        {
+          id: '1',
+          name: '业务介绍.docx',
+          kind: 'document',
+          path: 'x',
+          status: 'ready',
+          blocks: [{ type: 'paragraph', text: '业务优势是渠道覆盖全国' }],
+          extractStatus: 'success'
+        }
+      ],
+      config: {
+        provider: 'openai_compatible',
+        baseUrl: 'https://api.test.com/v1',
+        apiKey: 'sk-test',
+        model: 'gpt-4'
+      },
+      fetcher: mockFetch as unknown as typeof fetch
+    });
+
+    expect(result?.summary).toBe('已根据资料生成摘要');
+    expect(result?.keyPoints).toEqual(['重点1', '重点2']);
+    expect(result?.structureHints).toEqual(['建议先结论后优势']);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('falls back to local extraction when config has no apiKey', async () => {
+    const result = await buildUnderstandingWithAi({
+      brief: '做成招商汇报',
+      sources: [
+        {
+          id: '1',
+          name: '业务介绍.docx',
+          kind: 'document',
+          path: 'x',
+          status: 'ready',
+          blocks: [{ type: 'paragraph', text: '业务优势是渠道覆盖全国' }],
+          extractStatus: 'success'
+        }
+      ],
+      config: {
+        provider: 'openai_compatible',
+        baseUrl: '',
+        apiKey: '',
+        model: ''
+      }
+    });
+
+    expect(result?.keyPoints).toContain('业务优势是渠道覆盖全国');
   });
 });
