@@ -8,13 +8,16 @@ import { createImageProvider } from '@/services/ai/image-provider';
 import { autoBuildPagePrompt } from '@/services/ai/prompt-builder';
 import { buildDraftVariants } from '@/services/drafts/draft-service';
 import { useProjectStore } from '@/stores/project-store';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function WorkbenchPage() {
   const project = useProjectStore((state) => state.currentProject);
   const setVariants = useProjectStore((state) => state.setVariants);
+  const navigate = useNavigate();
   const [saveMessage, setSaveMessage] = useState('');
   const [generatedImageUrl, setGeneratedImageUrl] = useState('');
+  const [promptVersion, setPromptVersion] = useState(0);
   const [imageConfig, setImageConfig] = useState({
     baseUrl: 'https://free.codesonline.dev/v1',
     apiKey: '',
@@ -28,7 +31,15 @@ export default function WorkbenchPage() {
     if (!project || project.structure.length === 0) return '';
     const firstPage = project.structure[0];
     return autoBuildPagePrompt(project.brief, firstPage.title, firstPage.role);
-  }, [project]);
+  }, [project, promptVersion]);
+
+  const handleRefreshPrompt = useCallback(() => {
+    setPromptVersion((version) => version + 1);
+  }, []);
+
+  const handleCheckIssues = useCallback(() => {
+    navigate('/export');
+  }, [navigate]);
 
   useEffect(() => {
     window.desktopBridge?.getImageProviderConfig().then((config) => {
@@ -67,7 +78,7 @@ export default function WorkbenchPage() {
           <PreviewCanvas title="预览区" projectName={project?.name} pageTitles={pageTitles} generatedImageUrl={generatedImageUrl} />
         </section>
         <aside>
-          <ActionPanel title="能力区" initialPrompt={autoPrompt} onGenerateImage={handleGenerateImage} />
+          <ActionPanel title="能力区" initialPrompt={autoPrompt} onGenerateImage={handleGenerateImage} onRefreshPrompt={handleRefreshPrompt} onCheckIssues={handleCheckIssues} />
           <section className="panel status-panel">
             <h3>状态与保存</h3>
             <button

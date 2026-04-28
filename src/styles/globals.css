@@ -246,3 +246,11 @@ body {
 .export-summary ul {
   margin-bottom: 16px;
 }
+
+.nav-back {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #67615a;
+  text-decoration: none;
+  font-size: 14px;
+}

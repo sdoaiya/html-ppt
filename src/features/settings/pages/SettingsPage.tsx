@@ -1,6 +1,7 @@
 import { ImageProviderForm, type ImageProviderFormValue } from '@/components/settings/ImageProviderForm';
 import { UnderstandingProviderForm, type UnderstandingProviderFormValue } from '@/components/settings/UnderstandingProviderForm';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const defaultUnderstandingConfig: UnderstandingProviderFormValue = {
   provider: 'openai_compatible',
@@ -37,6 +38,7 @@ export default function SettingsPage() {
   return (
     <main>
       <h2>图片生成配置</h2>
+      <Link to="/" className="nav-back">&larr; 返回首页</Link>
       <section className="panel">
         <h3>连接状态</h3>
         <p>理解模型：{understandingConfig.apiKey ? '已配置' : '未配置'}</p>
