@@ -22,7 +22,7 @@ export function AppShell() {
       <header className="topbar">
         <div className="topbar-brand">
           <h1><Link to="/">资料生产工作台</Link></h1>
-          <p>{project?.name ?? '当前未选择项目'}</p>
+          {project?.name ? <p>{project.name}</p> : null}
         </div>
         <nav aria-label="生产流程" className="stage-nav">
           {steps.map((step) => (

@@ -66,8 +66,7 @@ export default function WorkbenchPage() {
   }
 
   return (
-    <main>
-      <StageProgress />
+    <div className="workbench-wrapper">
       <section className="workbench-grid">
         <aside>
           <SourcePanel title="资料区" sources={project?.sources} />
@@ -95,6 +94,6 @@ export default function WorkbenchPage() {
           </section>
         </aside>
       </section>
-    </main>
+    </div>
   );
 }
