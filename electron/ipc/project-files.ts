@@ -1,8 +1,8 @@
 import { dialog, ipcMain } from 'electron';
 import { readFile } from 'node:fs/promises';
 import mammoth from 'mammoth';
-import { PDFParse } from 'pdf-parse';
 import * as XLSX from 'xlsx';
+import { runOcrOnFile } from '../services/paddle-ocr.js';
 export { serializeProject } from './project-serialization.js';
 
 export function normalizeFilePayload(input: {
@@ -68,9 +68,21 @@ export function registerProjectFileHandlers() {
 
         if (ext === 'pdf') {
           const buffer = await readFile(filePath);
-          const parser = new PDFParse({ data: buffer });
-          const result = await parser.getText();
-          return normalizeFilePayload({ path: filePath, name, ext, content: result.text });
+          const pdfParseModule = await import('pdf-parse');
+          const pdfParseFn = (pdfParseModule as unknown as { default?: (buf: Buffer) => Promise<{ text: string }> }).default ?? pdfParseModule;
+          const result = await (pdfParseFn as (buf: Buffer) => Promise<{ text: string }>)(buffer);
+          const extractedText = (result as { text?: string }).text?.trim() ?? '';
+
+          if (extractedText.length > 100) {
+            return normalizeFilePayload({ path: filePath, name, ext, content: extractedText });
+          }
+
+          try {
+            const ocrResult = await runOcrOnFile(filePath);
+            return normalizeFilePayload({ path: filePath, name, ext, content: ocrResult.text });
+          } catch {
+            return normalizeFilePayload({ path: filePath, name, ext, content: extractedText });
+          }
         }
 
         return normalizeFilePayload({ path: filePath, name, ext });
