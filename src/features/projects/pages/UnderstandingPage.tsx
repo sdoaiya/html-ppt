@@ -15,7 +15,7 @@ export default function UnderstandingPage() {
 
   useEffect(() => {
     const run = async () => {
-      const aiResult = await buildUnderstandingWithAi({
+      let aiResult = await buildUnderstandingWithAi({
         brief: project?.brief ?? '整理成业务资料',
         sources: project?.sources ?? []
       });
