@@ -37,3 +37,9 @@ test('shows current project area in top bar when project exists', () => {
   render(<App />);
   expect(screen.getAllByText('招商资料演示').length).toBeGreaterThanOrEqual(2);
 });
+
+test('renders desktop sidebar navigation groups', () => {
+  render(<App />);
+  expect(screen.getByLabelText('主导航')).toBeInTheDocument();
+  expect(screen.getByText('最近项目')).toBeInTheDocument();
+});

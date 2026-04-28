@@ -10,6 +10,9 @@ export function PreviewCanvas({ title, projectName = '未命名资料项目', pa
     <section className="preview-canvas">
       <h3>{title}</h3>
       <article className="preview-card">
+        <div className="preview-meta">
+          <span className="preview-tag">当前结果预览</span>
+        </div>
         <h4>{projectName}</h4>
         <p>稳妥版 / 强表达版将在这里预览。</p>
         <ol>

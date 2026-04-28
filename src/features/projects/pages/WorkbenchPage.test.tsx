@@ -68,6 +68,11 @@ test('shows cover and comparison content slots in preview', () => {
   expect(screen.getByText('对比页卡槽')).toBeInTheDocument();
 });
 
+test('shows desktop-style canvas metadata in preview', () => {
+  renderWorkbench();
+  expect(screen.getByText('当前结果预览')).toBeInTheDocument();
+});
+
 test('shows extracted source names and summaries in workbench source panel', () => {
   renderWorkbench();
   expect(screen.getByText('业务介绍.txt')).toBeInTheDocument();
