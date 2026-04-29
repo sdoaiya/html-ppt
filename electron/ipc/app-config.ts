@@ -15,7 +15,18 @@ export type UnderstandingProviderConfig = {
   model: string;
 };
 
+export type OcrProviderConfig = {
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+};
+
 export function registerAppConfigHandlers() {
+  ipcMain.handle('config:get-ocr-provider', () => appStore.get('ocrProvider'));
+  ipcMain.handle('config:set-ocr-provider', (_event, payload: OcrProviderConfig) => {
+    appStore.set('ocrProvider', payload);
+    return payload;
+  });
   ipcMain.handle('config:get-understanding-provider', () => appStore.get('understandingProvider'));
   ipcMain.handle('config:set-understanding-provider', (_event, payload: UnderstandingProviderConfig) => {
     appStore.set('understandingProvider', payload);

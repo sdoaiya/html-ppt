@@ -3,6 +3,12 @@ import { UnderstandingProviderForm, type UnderstandingProviderFormValue } from '
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+type OcrConfig = {
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+};
+
 const defaultUnderstandingConfig: UnderstandingProviderFormValue = {
   provider: 'openai_compatible',
   baseUrl: '',
@@ -18,11 +24,21 @@ const defaultConfig: ImageProviderFormValue = {
 };
 
 export default function SettingsPage() {
+  const [ocrConfig, setOcrConfig] = useState<OcrConfig>({
+    apiUrl: 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs',
+    apiKey: '',
+    model: 'PaddleOCR-VL-1.5'
+  });
   const [understandingConfig, setUnderstandingConfig] = useState(defaultUnderstandingConfig);
   const [config, setConfig] = useState(defaultConfig);
   const [saveMessage, setSaveMessage] = useState('');
 
   useEffect(() => {
+    window.desktopBridge?.getOcrProviderConfig?.().then((value) => {
+      if (value && typeof value === 'object') {
+        setOcrConfig(value as OcrConfig);
+      }
+    });
     window.desktopBridge?.getUnderstandingProviderConfig?.().then((value) => {
       if (value && typeof value === 'object') {
         setUnderstandingConfig(value as UnderstandingProviderFormValue);
@@ -41,6 +57,7 @@ export default function SettingsPage() {
       <Link to="/" className="nav-back">&larr; 返回首页</Link>
       <section className="panel">
         <h3>连接状态</h3>
+        <p>OCR：{ocrConfig.apiKey ? '已配置' : '未配置'}</p>
         <p>理解模型：{understandingConfig.apiKey ? '已配置' : '未配置'}</p>
         <p>Base URL：{config.baseUrl}</p>
         <p>API Key：{config.apiKey ? '已配置' : '未配置'}</p>

@@ -1,8 +1,5 @@
 import { readFile } from 'node:fs/promises';
 
-const OCR_API_URL = 'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs';
-const DEFAULT_TOKEN = '57762e2be68fe4d0a5ae0aed5230a07d75314a74';
-const MODEL = 'PaddleOCR-VL-1.5';
 const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 120;
 
@@ -11,17 +8,23 @@ export type OcrResult = {
   pages: number;
 };
 
+export type OcrConfig = {
+  apiUrl: string;
+  apiKey: string;
+  model: string;
+};
+
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function runOcrOnFile(filePath: string, token?: string): Promise<OcrResult> {
-  const authToken = token ?? DEFAULT_TOKEN;
+export async function runOcrOnFile(filePath: string, config: OcrConfig): Promise<OcrResult> {
+  const authToken = config.apiKey;
   const fileBuffer = await readFile(filePath);
   const fileBlob = new Blob([fileBuffer]);
 
   const formData = new FormData();
-  formData.append('model', MODEL);
+  formData.append('model', config.model);
   formData.append('optionalPayload', JSON.stringify({
     useDocOrientationClassify: false,
     useDocUnwarping: false,
@@ -29,7 +32,7 @@ export async function runOcrOnFile(filePath: string, token?: string): Promise<Oc
   }));
   formData.append('file', fileBlob, filePath.split(/[\\/]/).pop() ?? 'document.pdf');
 
-  const jobResponse = await fetch(OCR_API_URL, {
+  const jobResponse = await fetch(config.apiUrl, {
     method: 'POST',
     headers: { Authorization: `bearer ${authToken}` },
     body: formData
@@ -48,7 +51,7 @@ export async function runOcrOnFile(filePath: string, token?: string): Promise<Oc
     await delay(POLL_INTERVAL_MS);
     attempts++;
 
-    const resultResponse = await fetch(`${OCR_API_URL}/${jobId}`, {
+    const resultResponse = await fetch(`${config.apiUrl}/${jobId}`, {
       headers: { Authorization: `bearer ${authToken}` }
     });
 

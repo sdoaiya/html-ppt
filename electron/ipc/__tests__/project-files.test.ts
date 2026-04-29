@@ -1,4 +1,26 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+
+vi.mock('electron-store', () => {
+  return {
+    default: class MockStore {
+      private store = new Map<string, unknown>();
+
+      constructor(options?: { defaults?: Record<string, unknown> }) {
+        Object.entries(options?.defaults ?? {}).forEach(([key, value]) => {
+          this.store.set(key, value);
+        });
+      }
+
+      get(key: string) {
+        return this.store.get(key);
+      }
+
+      set(key: string, value: unknown) {
+        this.store.set(key, value);
+      }
+    }
+  };
+});
 import { serializeProject } from '../project-serialization.js';
 import { normalizeFilePayload } from '../project-files.js';
 
