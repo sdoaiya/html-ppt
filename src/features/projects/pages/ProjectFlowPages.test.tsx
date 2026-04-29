@@ -66,8 +66,14 @@ test('structure page shows next-step card messaging', () => {
 });
 
 test('export page shows delivery checkpoint summary', () => {
-  render(<ExportPage />);
-  expect(screen.getByText('导出前质检')).toBeInTheDocument();
-  expect(screen.getByText('请先处理高风险项，再导出项目结果。')).toBeInTheDocument();
+  render(
+    <MemoryRouter>
+      <ExportPage />
+    </MemoryRouter>
+  );
+  expect(screen.getByText('交付格式')).toBeInTheDocument();
+  expect(screen.getByText('交付前检查')).toBeInTheDocument();
+  expect(screen.getByText('交付状态总览')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: '导出项目 JSON' })).toBeInTheDocument();
+  expect(screen.getByText('最近导出结果')).toBeInTheDocument();
 });

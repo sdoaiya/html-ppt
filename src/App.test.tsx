@@ -22,7 +22,7 @@ test('renders new project entry action', () => {
 
 test('renders settings entry in app shell', () => {
   render(<App />);
-  expect(screen.getByRole('link', { name: '设置' })).toBeInTheDocument();
+  expect(screen.getByText('⚙ 设置')).toBeInTheDocument();
 });
 
 test('shows recent project card when project history exists', () => {

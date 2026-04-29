@@ -1,13 +1,10 @@
+import { OcrProviderForm, type OcrProviderFormValue } from '@/components/settings/OcrProviderForm';
 import { ImageProviderForm, type ImageProviderFormValue } from '@/components/settings/ImageProviderForm';
 import { UnderstandingProviderForm, type UnderstandingProviderFormValue } from '@/components/settings/UnderstandingProviderForm';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-type OcrConfig = {
-  apiUrl: string;
-  apiKey: string;
-  model: string;
-};
+type OcrConfig = OcrProviderFormValue;
 
 const defaultUnderstandingConfig: UnderstandingProviderFormValue = {
   provider: 'openai_compatible',
@@ -71,6 +68,14 @@ export default function SettingsPage() {
             window.desktopBridge?.setUnderstandingProviderConfig?.(value);
             setUnderstandingConfig(value);
             setSaveMessage('理解模型配置已保存');
+          }}
+        />
+        <OcrProviderForm
+          initial={ocrConfig}
+          onSave={(value) => {
+            window.desktopBridge?.setOcrProviderConfig?.(value);
+            setOcrConfig(value);
+            setSaveMessage('OCR 配置已保存');
           }}
         />
         <ImageProviderForm

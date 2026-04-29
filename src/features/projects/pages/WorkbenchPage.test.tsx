@@ -37,14 +37,14 @@ beforeEach(() => {
 test('renders three-pane workbench', () => {
   renderWorkbench();
   expect(screen.getByText('资料区')).toBeInTheDocument();
-  expect(screen.getByText('预览区')).toBeInTheDocument();
-  expect(screen.getByText('能力区')).toBeInTheDocument();
+  expect(screen.getByText('章节大纲')).toBeInTheDocument();
+  expect(screen.getByText('图片生成')).toBeInTheDocument();
 });
 
 test('renders project-specific pages from shared project state', () => {
   renderWorkbench();
   expect(screen.getByText('招商资料演示')).toBeInTheDocument();
-  expect(screen.getAllByText('方案对比').length).toBeGreaterThanOrEqual(2);
+  expect(screen.getByText('方案对比')).toBeInTheDocument();
 });
 
 test('shows feedback after saving current variants', async () => {
@@ -64,13 +64,14 @@ test('auto-fills image prompt from project context', () => {
 
 test('shows cover and comparison content slots in preview', () => {
   renderWorkbench();
-  expect(screen.getByText('封面卡槽')).toBeInTheDocument();
-  expect(screen.getByText('对比页卡槽')).toBeInTheDocument();
+  expect(screen.getByText('封面页面')).toBeInTheDocument();
+  expect(screen.getByText('推荐页序')).toBeInTheDocument();
 });
 
 test('shows desktop-style canvas metadata in preview', () => {
   renderWorkbench();
-  expect(screen.getByText('当前结果预览')).toBeInTheDocument();
+  expect(screen.getAllByText('封面').length).toBeGreaterThanOrEqual(1);
+  expect(screen.getByText('方案对比')).toBeInTheDocument();
 });
 
 test('shows extracted source names and summaries in workbench source panel', () => {

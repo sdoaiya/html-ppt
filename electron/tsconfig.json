@@ -10,5 +10,5 @@
     "rootDir": ".",
     "types": ["node", "electron"]
   },
-  "include": ["*.ts", "ipc/**/*.ts", "services/**/*.ts"]
+  "include": ["*.ts", "*.cts", "ipc/**/*.ts", "services/**/*.ts"]
 }
