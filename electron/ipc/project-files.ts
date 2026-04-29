@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import mammoth from 'mammoth';
 import * as XLSX from 'xlsx';
 import { runOcrOnFile } from '../services/paddle-ocr.js';
+import { appStore } from '../services/store.js';
 export { serializeProject } from './project-serialization.js';
 
 export function normalizeFilePayload(input: {
@@ -78,7 +79,10 @@ export function registerProjectFileHandlers() {
           }
 
           try {
-            const ocrResult = await runOcrOnFile(filePath);
+            const ocrConfig = appStore.get('ocrProvider');
+            const ocrResult = ocrConfig.apiKey
+              ? await runOcrOnFile(filePath, ocrConfig)
+              : { text: extractedText, pages: 0 };
             return normalizeFilePayload({ path: filePath, name, ext, content: ocrResult.text });
           } catch {
             return normalizeFilePayload({ path: filePath, name, ext, content: extractedText });
