@@ -2,6 +2,10 @@
 node_modules/
 dist/
 dist-electron/
+release/
+test-results/
 .env
 .env.*
 *.log
+deck-*.png
+*.html
