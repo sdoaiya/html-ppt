@@ -1,10 +1,21 @@
 export type ProjectStage =
   | 'import'
+  | 'type'
   | 'understanding'
+  | 'config'
+  | 'progress'
   | 'structure'
   | 'direction'
   | 'workbench'
   | 'export';
+
+export type DeliverableType =
+  | 'report'
+  | 'pitch'
+  | 'product'
+  | 'training'
+  | 'poster'
+  | 'infographic';
 
 export type SourceAsset = {
   id: string;
@@ -40,6 +51,7 @@ export type Project = {
   name: string;
   stage: ProjectStage;
   brief: string;
+  deliverableType: DeliverableType | null;
   sources: ExtractedSourceAsset[];
   understanding: unknown | null;
   structure: StructureNode[];

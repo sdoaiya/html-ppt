@@ -6,6 +6,7 @@ export function createEmptyProject(name: string, brief: string): Project {
     name,
     stage: 'import',
     brief,
+    deliverableType: null,
     sources: [],
     understanding: null,
     structure: [],

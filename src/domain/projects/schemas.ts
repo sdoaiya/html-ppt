@@ -2,11 +2,23 @@ import { z } from 'zod';
 
 export const projectStageSchema = z.enum([
   'import',
+  'type',
   'understanding',
+  'config',
+  'progress',
   'structure',
   'direction',
   'workbench',
   'export'
+]);
+
+export const deliverableTypeSchema = z.enum([
+  'report',
+  'pitch',
+  'product',
+  'training',
+  'poster',
+  'infographic'
 ]);
 
 export const sourceAssetSchema = z.object({
@@ -29,6 +41,7 @@ export const projectSchema = z.object({
   name: z.string(),
   stage: projectStageSchema,
   brief: z.string(),
+  deliverableType: deliverableTypeSchema.nullable(),
   sources: z.array(sourceAssetSchema),
   understanding: z.unknown().nullable(),
   structure: z.array(structureNodeSchema),

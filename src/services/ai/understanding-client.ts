@@ -17,6 +17,11 @@ export function buildUnderstandingRequestConfig(config: UnderstandingProviderRou
   };
 }
 
+function summarizeRemoteError(status: number, payload: string) {
+  const compactPayload = payload.replace(/\s+/g, ' ').trim().slice(0, 240);
+  return `理解模型请求失败（${status}）：${compactPayload || '未返回错误详情'}`;
+}
+
 function buildPrompt(brief: string, sources: ExtractedSourceAsset[]) {
   const textParts = sources.flatMap((source) =>
     (source.blocks ?? [])
@@ -57,7 +62,8 @@ async function callLlm(
   });
 
   if (!response.ok) {
-    throw new Error(`LLM request failed: ${response.status}`);
+    const payload = await response.text().catch(() => '');
+    throw new Error(summarizeRemoteError(response.status, payload));
   }
 
   return response.json();
@@ -93,6 +99,7 @@ export async function buildUnderstandingWithAi(
 ): Promise<UnderstandingResult | null> {
   const route = input.config ? buildUnderstandingRequestConfig(input.config) : null;
   const fetchFn = input.fetcher ?? fetch;
+  let remoteErrorSummary = '';
 
   if (route?.apiKey && route.model) {
     try {
@@ -104,13 +111,14 @@ export async function buildUnderstandingWithAi(
 
       const aiResult = parseAiResponse(raw);
       if (aiResult) return aiResult;
-    } catch {
+    } catch (error) {
+      remoteErrorSummary = error instanceof Error ? error.message : '理解模型请求失败，且未能解析错误详情';
       // fall through to local extraction
     }
   }
 
   return {
-    summary: `已根据"${input.brief}"准备理解模型请求，可继续生成结构建议。`,
+    summary: remoteErrorSummary || `已根据"${input.brief}"准备理解模型请求，可继续生成结构建议。`,
     keyPoints: input.sources.flatMap((source) =>
       (source.blocks ?? [])
         .filter((block) => block.type === 'paragraph')

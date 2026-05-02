@@ -51,6 +51,8 @@ export default function WorkbenchPage() {
   const [showEmpty, setShowEmpty] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [generatedImageUrl, setGeneratedImageUrl] = useState('');
+  const [imageStatus, setImageStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [imageError, setImageError] = useState('');
   const [promptVersion, setPromptVersion] = useState(0);
   const [imageConfig, setImageConfig] = useState({
     baseUrl: 'https://free.codesonline.dev/v1',
@@ -78,9 +80,18 @@ export default function WorkbenchPage() {
     size: string;
     upscale?: '2k' | '4k';
   }) => {
-    if (!imageConfig.apiKey) return null;
+    if (!imageConfig.apiKey) {
+      setImageStatus('error');
+      setImageError('请先到设置页配置图片 API Key。');
+      return null;
+    }
+    setImageStatus('loading');
+    setImageError('');
     const provider = createImageProvider(fetch, imageConfig);
-    if (input.mode === 'edit') return null;
+    if (input.mode === 'edit') {
+      setImageStatus('idle');
+      return null;
+    }
     const result = await provider.generate({
       prompt: input.prompt,
       size: input.size,
@@ -88,8 +99,23 @@ export default function WorkbenchPage() {
       n: 1
     });
     const url = (result?.data as Array<{ url?: string }>)?.[0]?.url ?? null;
-    if (url) setGeneratedImageUrl(url);
+    if (url) {
+      setGeneratedImageUrl(url);
+      setImageStatus('success');
+    } else {
+      setImageStatus('error');
+      setImageError('图片生成失败，请重试。');
+    }
     return url;
+  };
+
+  const handleGenerateImageClick = async () => {
+    try {
+      await handleGenerateImage({ mode: 'generate', prompt: autoPrompt, size: '16:9' });
+    } catch {
+      setImageStatus('error');
+      setImageError('图片生成失败，请检查配置后重试。');
+    }
   };
 
   const previewItems =
@@ -128,7 +154,7 @@ export default function WorkbenchPage() {
           </div>
         </div>
         <div className="workbench-topbar-right">
-          <button className="btn btn-surface" style={{ fontSize: 13, padding: '8px 14px' }}>
+          <button className="btn btn-surface" style={{ fontSize: 13, padding: '8px 14px' }} onClick={() => setShowEmpty((v) => !v)}>
             {showEmpty ? '显示内容' : '查看空状态'}
           </button>
           <button className="btn btn-accent" onClick={handleCheckIssues}>
@@ -364,17 +390,31 @@ export default function WorkbenchPage() {
               <button
                 className="btn btn-accent"
                 style={{ width: '100%' }}
-                onClick={() =>
-                  handleGenerateImage({ mode: 'generate', prompt: autoPrompt, size: '16:9' })
-                }
+                onClick={() => void handleGenerateImageClick()}
+                disabled={imageStatus === 'loading'}
               >
-                生成图片
+                {imageStatus === 'loading' ? '生成中...' : '生成图片'}
               </button>
               {imageConfig.apiKey ? (
                 <p style={{ fontSize: 11, color: 'var(--success)', margin: 0 }}>图片服务已连接</p>
               ) : (
                 <p style={{ fontSize: 11, color: 'var(--warning)', margin: 0 }}>请先到设置页配置 API Key</p>
               )}
+              {imageStatus === 'success' ? (
+                <p style={{ fontSize: 11, color: 'var(--success)', margin: 0 }}>图片生成成功</p>
+              ) : null}
+              {imageStatus === 'error' ? (
+                <div style={{ display: 'grid', gap: 6 }}>
+                  <p style={{ fontSize: 11, color: 'var(--danger)', margin: 0 }}>{imageError}</p>
+                  <button
+                    className="btn btn-surface"
+                    style={{ width: '100%', fontSize: 12 }}
+                    onClick={() => void handleGenerateImageClick()}
+                  >
+                    重试生成
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
 
@@ -383,6 +423,13 @@ export default function WorkbenchPage() {
             <div className="panel-header">
               <span className="panel-title">状态与保存</span>
             </div>
+            <button
+              className="btn btn-accent"
+              style={{ width: '100%', marginBottom: 8 }}
+              onClick={() => navigate('/preview')}
+            >
+              进入预览微调
+            </button>
             <button
               className="btn btn-surface"
               style={{ width: '100%', marginBottom: 8 }}

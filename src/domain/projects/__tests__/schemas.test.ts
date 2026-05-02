@@ -8,6 +8,7 @@ describe('projectSchema', () => {
       name: '招商资料',
       stage: 'import',
       brief: '整理成招商汇报',
+      deliverableType: null,
       sources: [],
       understanding: null,
       structure: [],

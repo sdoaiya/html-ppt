@@ -32,6 +32,8 @@ export default function ExportPage() {
   const [showToast, setShowToast] = useState(false);
   const [copied, setCopied] = useState(false);
   const [clock, setClock] = useState('');
+  const [selectedFormats, setSelectedFormats] = useState<Array<'html' | 'pdf'>>(['html']);
+  const [exportStatus, setExportStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   // Live clock
   useState(() => {
@@ -72,6 +74,48 @@ export default function ExportPage() {
     }
   };
 
+  const toggleFormat = (format: 'html' | 'pdf') => {
+    setSelectedFormats((prev) =>
+      prev.includes(format) ? prev.filter((f) => f !== format) : [...prev, format]
+    );
+  };
+
+  const handleRunExport = async () => {
+    if (selectedFormats.length === 0) {
+      setExportStatus('error');
+      setExportMessage('请至少选择一种导出格式。');
+      return;
+    }
+
+    setExportStatus('loading');
+    setExportMessage('导出中，请稍候...');
+
+    // 当前真实落盘能力：项目 JSON。HTML/PDF 先走状态流程占位。
+    if (selectedFormats.includes('html') || selectedFormats.includes('pdf')) {
+      const filePath = await window.desktopBridge?.exportProjectJson?.(project);
+      if (filePath) {
+        setLastExportPath(filePath);
+        setLastExportAt(new Date().toLocaleTimeString('zh-CN', { hour12: false }));
+        setLastExportType(
+          selectedFormats.length === 2
+            ? 'HTML + PDF（当前以项目 JSON 作为交付占位）'
+            : selectedFormats[0] === 'html'
+            ? 'HTML（当前以项目 JSON 作为交付占位）'
+            : 'PDF（当前以项目 JSON 作为交付占位）'
+        );
+        setExportStatus('success');
+        setExportMessage('导出完成。');
+      } else {
+        setExportStatus('error');
+        setExportMessage('导出已取消或失败，请重试。');
+      }
+      return;
+    }
+
+    setExportStatus('error');
+    setExportMessage('当前未选择可导出格式。');
+  };
+
   const totalChecks = checklistItems.length + result.issues.length;
   const failedChecks = [...checklistItems.filter((item) => !item.pass), ...result.issues].length;
   const deliveryReady = failedChecks === 0;
@@ -79,7 +123,7 @@ export default function ExportPage() {
   return (
     <div className="page-wrapper">
       <div>
-        <div className="page-step-label">STEP 5 / 导出交付</div>
+        <div className="page-step-label">STEP 7 / 导出交付</div>
         <h1 className="page-title">生成完成后，直接拿走你真正要交付的文件。</h1>
         <p className="page-desc">这里不是技术面板，而是交付面板。</p>
       </div>
@@ -122,6 +166,30 @@ export default function ExportPage() {
         </div>
       </div>
 
+      <div className="card card-sm">
+        <div className="card-title">项目摘要</div>
+        <div style={{ display: 'grid', gap: 8, fontSize: 13 }}>
+          <div><strong>项目名称：</strong>{project?.name ?? '未命名项目'}</div>
+          <div><strong>页面数量：</strong>{project?.structure?.length ?? 0} 页</div>
+          <div>
+            <strong>风格倾向：</strong>
+            {project?.deliverableType === 'pitch'
+              ? '招商路演'
+              : project?.deliverableType === 'report'
+              ? '商务汇报'
+              : project?.deliverableType === 'product'
+              ? '产品表达'
+              : project?.deliverableType === 'training'
+              ? '教学清晰'
+              : project?.deliverableType === 'poster'
+              ? '视觉冲击'
+              : project?.deliverableType === 'infographic'
+              ? '信息密集'
+              : '默认'}
+          </div>
+        </div>
+      </div>
+
       {/* Deliverables */}
       <div className="card card-sm">
         <div className="card-title">交付格式</div>
@@ -160,8 +228,25 @@ export default function ExportPage() {
       {/* Export Actions */}
       <div className="card card-sm">
         <div className="card-title">导出动作</div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+          <button
+            className={`chip ${selectedFormats.includes('html') ? 'active' : ''}`}
+            onClick={() => toggleFormat('html')}
+          >
+            HTML
+          </button>
+          <button
+            className={`chip ${selectedFormats.includes('pdf') ? 'active' : ''}`}
+            onClick={() => toggleFormat('pdf')}
+          >
+            PDF
+          </button>
+        </div>
         <div className="export-actions">
-          <button className="btn btn-accent" onClick={handleExportJson}>
+          <button className="btn btn-accent" onClick={() => void handleRunExport()} disabled={exportStatus === 'loading'}>
+            {exportStatus === 'loading' ? '导出中...' : '开始导出'}
+          </button>
+          <button className="btn btn-surface" onClick={handleExportJson}>
             导出项目 JSON
           </button>
           <button className="btn btn-surface" onClick={() => setShowToast(true)}>
@@ -179,6 +264,11 @@ export default function ExportPage() {
             {exportMessage}
           </p>
         )}
+        {exportStatus === 'error' ? (
+          <button className="btn btn-surface" style={{ marginTop: 8 }} onClick={() => void handleRunExport()}>
+            重试导出
+          </button>
+        ) : null}
       </div>
 
       {/* Last Export Result */}

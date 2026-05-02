@@ -94,4 +94,34 @@ describe('buildUnderstandingRequestConfig', () => {
 
     expect(result?.keyPoints).toContain('业务优势是渠道覆盖全国');
   });
+
+  it('surfaces remote error details in fallback summary when LLM request fails', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      text: async () => JSON.stringify({
+        error: {
+          type: 'ProviderModelNotFoundError',
+          message: 'Model gpt-5.4 not found'
+        }
+      })
+    });
+
+    const result = await buildUnderstandingWithAi({
+      brief: '做成招商汇报',
+      sources: [],
+      config: {
+        provider: 'openai_compatible',
+        baseUrl: 'https://sub2api.daw111.asia/v1',
+        apiKey: 'sk-test',
+        model: 'gpt-5.4'
+      },
+      fetcher: mockFetch as unknown as typeof fetch
+    });
+
+    expect(result?.summary).toContain('理解模型请求失败');
+    expect(result?.summary).toContain('404');
+    expect(result?.summary).toContain('ProviderModelNotFoundError');
+    expect(result?.summary).toContain('Model gpt-5.4 not found');
+  });
 });

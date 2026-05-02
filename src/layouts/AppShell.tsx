@@ -3,29 +3,32 @@ import { useProjectStore } from '@/stores/project-store';
 
 const steps = [
   { id: 'import', label: '上传资料' },
-  { id: 'type', label: '理解主题' },
-  { id: 'config', label: '组合 Skill' },
-  { id: 'workbench', label: '生成版式' },
+  { id: 'type', label: '选择类型' },
+  { id: 'understanding', label: '理解资料' },
+  { id: 'config', label: '配置方案' },
+  { id: 'progress', label: '生成进度' },
+  { id: 'workbench', label: '预览微调' },
   { id: 'export', label: '导出成品' }
 ];
 
-const routeStageMap: Record<string, string> = {
-  '/': '上传资料',
-  '/import': '上传资料',
-  '/type': '理解主题',
-  '/config': '组合 Skill',
-  '/understanding': '理解资料',
-  '/structure': '组织结构',
-  '/workbench': '生成版式',
-  '/export': '导出成品'
+const routeStepMap: Record<string, string> = {
+  '/': 'import',
+  '/import': 'import',
+  '/type': 'type',
+  '/understanding': 'understanding',
+  '/config': 'config',
+  '/progress': 'progress',
+  '/workbench': 'workbench',
+  '/preview': 'workbench',
+  '/export': 'export'
 };
 
 export function AppShell() {
   const location = useLocation();
   const project = useProjectStore((state) => state.currentProject);
-  const currentStage = routeStageMap[location.pathname] ?? '';
-
-  const currentIndex = steps.findIndex((s) => s.id === currentStage.replace('上传资料', 'import').replace('理解主题', 'type').replace('组合 Skill', 'config').replace('生成版式', 'workbench').replace('导出成品', 'export'));
+  const currentStepId = routeStepMap[location.pathname] ?? '';
+  const currentIndex = steps.findIndex((s) => s.id === currentStepId);
+  const currentStepLabel = steps.find((s) => s.id === currentStepId)?.label;
 
   return (
     <div className="app-shell">
@@ -39,7 +42,7 @@ export function AppShell() {
         {/* Stage Progress */}
         <nav aria-label="主导航" className="sidebar-nav">
           {steps.map((step, index) => {
-            const path = `/${step.id}`;
+            const path = step.id === 'import' ? '/import' : `/${step.id}`;
             const isActive = location.pathname === path;
             const isComplete = currentIndex > index;
             return (
@@ -82,7 +85,7 @@ export function AppShell() {
       <div className="desktop-main">
         <header className="desktop-toolbar">
           <div className="desktop-toolbar-left">
-            <strong>{currentStage || '资料生产工作台'}</strong>
+            <strong>{currentStepLabel || '资料生产工作台'}</strong>
             <p>
               {project?.brief ??
                 '从资料导入、结构生成到工作台预览与配图生成，一条链路完成资料生产。'}
